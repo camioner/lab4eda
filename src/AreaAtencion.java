@@ -1,15 +1,19 @@
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class AreaAtencion {
-    String Nombre;
+    String nombre;
     PriorityQueue<Paciente> pacientesHeap;
     int capacidadMaxima;
 
 
-    AreaAtencion(String nombre, int capacidadMaxima) {
-
+    public AreaAtencion(String nombre, int capacidadMaxima) {
+        this.nombre = nombre;
+        this.capacidadMaxima = capacidadMaxima;
+        this.pacientesHeap = new PriorityQueue<>(PRIORIDAD_URGENCIA);
     }
 
     Paciente atenderPaciente(){
@@ -27,16 +31,21 @@ public class AreaAtencion {
     List<Paciente> obtenerPacientesPorHeapSort(){
         List<Paciente> pacientes = new ArrayList<>();
 
+
+
     }
 
-
-
-    @Override
-    public int compareTo(Paciente paciente,Paciente paciente2) {
-        if(paciente.getCategoria() > paciente2.getCategoria()){
-            return 1;
+    public static final Comparator<Paciente> PRIORIDAD_URGENCIA = new Comparator<Paciente>() {
+        @Override
+        public int compare(Paciente p1, Paciente p2) {
+            if (p1.categoria != p2.categoria) {
+                return Integer.compare(p1.categoria, p2.categoria); // menor = más urgente
+            } else {
+                return Long.compare(p1.tiempoLlegada, p2.tiempoLlegada); // más tiempo esperando
+            }
         }
-        return 0;
-    }
+    };
+
 
 }
+
