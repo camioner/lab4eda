@@ -16,23 +16,25 @@ public class AreaAtencion {
         this.pacientesHeap = new PriorityQueue<>(PRIORIDAD_URGENCIA);
     }
 
-    Paciente atenderPaciente(){
+    Paciente atenderPaciente() {
         return pacientesHeap.poll();
     }
 
-    void ingresarPaciente(Paciente p){
+    void ingresarPaciente(Paciente p) {
         pacientesHeap.add(p);
     }
 
-    boolean estaSaturada(){
-        if (pacientesHeap.size() == capacidadMaxima){return true;}
+    boolean estaSaturada() {
+        if (pacientesHeap.size() == capacidadMaxima) {
+            return true;
+        }
         return false;
     }
-    List<Paciente> obtenerPacientesPorHeapSort(){
+
+    List<Paciente> obtenerPacientesPorHeapSort() {
         List<Paciente> pacientes = new ArrayList<>();
-
-
-
+        pacientes.sort(PRIORIDAD_URGENCIA);
+        return pacientes;
     }
 
     public static final Comparator<Paciente> PRIORIDAD_URGENCIA = new Comparator<Paciente>() {

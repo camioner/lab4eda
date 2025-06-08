@@ -31,12 +31,13 @@ public class Paciente {
     void registrarCambio(String descripcion) {
         historialCambios.push(descripcion);
     }
-    int getCategoria() {
-        return categoria;
-    }
-    String getEstado(){
-        return estado;
-    }
+    public String getNombre() { return nombre; }
+    public String getApellido() { return apellido; }
+    public String getId() { return id; }
+    public int getCategoria() { return categoria; }
+    public long getTiempoLlegada() { return tiempoLlegada; }
+    public String getEstado() { return estado; }
+
     void cambiarEstado(String estado){
         this.estado=estado;
     }
