@@ -10,7 +10,7 @@ public class Paciente {
     String area;
     Stack<String> historialCambios;
 
-    Paciente(String nombre, String apellido, String id, int categoria, String area) {
+    Paciente(String nombre, String apellido, String id, int categoria) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.id = id;
@@ -18,7 +18,7 @@ public class Paciente {
         this.tiempoLlegada = System.currentTimeMillis();
         this.estado = "en_espera";
         this.historialCambios = new Stack<>();
-        this.area = area;
+
 
 
     }
@@ -37,6 +37,7 @@ public class Paciente {
     public int getCategoria() { return categoria; }
     public long getTiempoLlegada() { return tiempoLlegada; }
     public String getEstado() { return estado; }
+    public void setArea(String area) { this.area=area; }
 
     void cambiarEstado(String estado){
         this.estado=estado;

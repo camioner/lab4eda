@@ -1,17 +1,15 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class hodpital {
     Map<String,Paciente> pacientestotales = new HashMap<>();
     PriorityQueue<Paciente> colaatencion = new PriorityQueue<>();
     Map<String, AreaAtencion> areaatencion = new HashMap<>();
-    List<Paciente> pacientesatendidos = new Arraylist<>();
+    ArrayList<Paciente> pacientesatendidos = new ArrayList<>();
 
 
 
-    public void pacientestotales(Map<String,Paciente>){
+    public void registrarPacientes(Paciente p){
+        colaatencion.add(p);
 
     }
 }
