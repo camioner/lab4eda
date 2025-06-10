@@ -25,8 +25,7 @@ class GeneradorPacientes {
             String id = String.format("ID%04d", i + 1);
             int categoria = generarCategoriaAleatoria();
             long tiempoLlegada = timestampInicio + i * 600; // cada 10 minutos = 600 segundos
-            Paciente p = new Paciente(nombre, apellido, id, categoria);
-            p.cambiarEstado("en_espera");
+            Paciente p = new Paciente(nombre, apellido, id, categoria, tiempoLlegada);
             pacientes.add(p);
         }
         return pacientes;
@@ -43,7 +42,8 @@ class GeneradorPacientes {
                         p.getId(),
                         p.getCategoria(),
                         p.getTiempoLlegada(),
-                        p.getEstado()
+                        p.getEstado(),
+                        p.getArea()
                 );
             }
         }

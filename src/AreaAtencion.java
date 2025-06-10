@@ -32,7 +32,7 @@ public class AreaAtencion {
     }
 
     List<Paciente> obtenerPacientesPorHeapSort() {
-        List<Paciente> pacientes = new ArrayList<>();
+        List<Paciente> pacientes = new ArrayList<>(pacientesHeap);
         pacientes.sort(PRIORIDAD_URGENCIA);
         return pacientes;
     }

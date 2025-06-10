@@ -10,6 +10,6 @@ public class hodpital {
 
     public void registrarPacientes(Paciente p){
         colaatencion.add(p);
-
+        pacientestotales.put(p.getNombre(), p);
     }
 }
