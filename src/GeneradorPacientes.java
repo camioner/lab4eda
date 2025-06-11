@@ -42,8 +42,7 @@ class GeneradorPacientes {
                         p.getId(),
                         p.getCategoria(),
                         p.getTiempoLlegada(),
-                        p.getEstado(),
-                        p.getArea()
+                        p.getEstado()
                 );
             }
         }

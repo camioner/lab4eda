@@ -21,10 +21,10 @@ public class LectorPacientes {
                 int categoria = Integer.parseInt(partes[3]);
                 long tiempoLlegada = Long.parseLong(partes[4]);
                 String estado = partes[5];
-                String area = partes[6];
+
 
                 Paciente p = new Paciente(nombre, apellido, id, categoria, tiempoLlegada);
-                p.setArea(area);
+
                 if (!estado.equals("en_espera")) {
                     p.cambiarEstado(estado); // solo si estaba marcado como atendido, etc.
                 }

@@ -11,20 +11,15 @@ public class Paciente {
     Stack<String> historialCambios;
 
     // Constructor completo con área
-    public Paciente(String nombre, String apellido, String id, int categoria, String area, long tiempoLlegada) {
+    public Paciente(String nombre, String apellido, String id, int categoria, long tiempoLlegada) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.id = id;
         this.categoria = categoria;
-        this.area = area;
+        this.area = null;
         this.tiempoLlegada = tiempoLlegada;
         this.estado = "en_espera";
         this.historialCambios = new Stack<>();
-    }
-
-    // Constructor sin área (por compatibilidad con el lector anterior si se quiere)
-    public Paciente(String nombre, String apellido, String id, int categoria, long tiempoLlegada) {
-        this(nombre, apellido, id, categoria, "SAPU", tiempoLlegada); // valor por defecto
     }
 
     long tiempoEsperaActual() {
