@@ -51,8 +51,4 @@ public class Paciente {
         return historialCambios.isEmpty() ? "Sin historial" : historialCambios.pop();
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s %s (ID: %s, C%d, %s, estado: %s)", nombre, apellido, id, categoria, area, estado);
-    }
 }

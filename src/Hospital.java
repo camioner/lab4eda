@@ -38,6 +38,10 @@ public class Hospital {
             colaAtencion.add(p);
         }
     }
+    public Paciente obtenerPaciente(String id) {
+        return pacientesTotales.get(id);
+    }
+
 
     public Paciente atenderSiguiente() {
         Paciente p = colaAtencion.poll(); // paciente más urgente

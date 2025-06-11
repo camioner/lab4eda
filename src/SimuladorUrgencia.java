@@ -7,6 +7,7 @@ public class SimuladorUrgencia {
         Hospital hospital = new Hospital();
         LectorPacientes lector = new LectorPacientes();
         String idSeguimiento = "ID0075"; // ID de paciente C4
+        String idMalCategorizado = "ID0072";
         Map<String, Integer> minutoLlegadaSeguimiento = new HashMap<>();
 
 
@@ -56,6 +57,17 @@ public class SimuladorUrgencia {
                         tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria,
                         idSeguimiento, minutoLlegadaSeguimiento);
             }
+            if (minuto == 720) { // después de que haya llegado
+                Paciente p = hospital.obtenerPaciente(idMalCategorizado);
+                if (p != null) {
+                    System.out.printf("\n[RE-CATEGORIZACIÓN] Antes: Paciente %s categoría C%d\n", p.getId(), p.getCategoria());
+                    hospital.reasignarCategoria(p.getId(), 1); // lo cambiamos a C1
+                    System.out.printf("[RE-CATEGORIZACIÓN] Después: categoría C%d\n", p.getCategoria());
+                }
+            }
+
+
+
 
             // Atención extra cada 3 nuevos
             if (nuevosPacientesAcumulados >= 3) {
@@ -67,6 +79,7 @@ public class SimuladorUrgencia {
                         idSeguimiento, minutoLlegadaSeguimiento);
                 nuevosPacientesAcumulados = 0;
             }
+
 
         }
 
@@ -85,9 +98,20 @@ public class SimuladorUrgencia {
         for (Paciente p : pacientesFueraDeTiempo) {
             int llegadaMinuto = (int) (p.getTiempoLlegada() / 60);
             long espera = 1440 - llegadaMinuto;
-            System.out.printf("- %s %s (C%d, espera %d min)\n",
-                    p.getNombre(), p.getApellido(), p.getCategoria(), espera);
+            long horas = espera / 60;
+            long minutos = espera % 60;
+            System.out.printf("- %s %s (C%d, espera %d h %d min)\n",
+                    p.getNombre(), p.getApellido(), p.getCategoria(), horas, minutos);
+
         }
+        Paciente cambiado = hospital.obtenerPaciente(idMalCategorizado);
+        if (cambiado != null) {
+            System.out.println("\nHistorial de cambios del paciente " + idMalCategorizado + ":");
+            while (!cambiado.historialCambios.isEmpty()) {
+                System.out.println("- " + cambiado.obtenerUltimoCambio());
+            }
+        }
+
     }
 
     private void atenderYRegistrar(
@@ -124,6 +148,7 @@ public class SimuladorUrgencia {
                             idSeguimiento, minutoActual, minutoActual - llegada);
                 }
             }
+
 
 
         }
