@@ -6,6 +6,9 @@ public class SimuladorUrgencia {
     public void simular(int pacientesPorDia) {
         Hospital hospital = new Hospital();
         LectorPacientes lector = new LectorPacientes();
+        String idSeguimiento = "ID0075"; // ID de paciente C4
+        Map<String, Integer> minutoLlegadaSeguimiento = new HashMap<>();
+
 
         List<Paciente> pacientes;
         try {
@@ -35,24 +38,36 @@ public class SimuladorUrgencia {
 
         for (minuto = 0; minuto < 1440; minuto++) {
 
+
+
             // Llegada cada 10 min
             if (minuto % 10 == 0 && pacienteIndex < pacientesPorDia && pacienteIndex < pacientes.size()) {
                 Paciente nuevo = pacientes.get(pacienteIndex++);
                 hospital.registrarPaciente(nuevo);
                 nuevosPacientesAcumulados++;
+                if (nuevo.getId().equals(idSeguimiento)) {
+                    minutoLlegadaSeguimiento.put(idSeguimiento, minuto);
+                }
             }
 
             // Atención cada 15 min
             if (minuto % 15 == 0) {
-                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria, tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria);
+                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria,
+                        tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria,
+                        idSeguimiento, minutoLlegadaSeguimiento);
             }
 
             // Atención extra cada 3 nuevos
             if (nuevosPacientesAcumulados >= 3) {
-                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria, tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria);
-                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria, tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria);
+                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria,
+                        tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria,
+                        idSeguimiento, minutoLlegadaSeguimiento);
+                atenderYRegistrar(hospital, minuto, tiemposAtencion, atendidosPorCategoria,
+                        tiemposPorCategoria, pacientesFueraDeTiempo, tiempoMaximoCategoria,
+                        idSeguimiento, minutoLlegadaSeguimiento);
                 nuevosPacientesAcumulados = 0;
             }
+
         }
 
         // Mostrar resultados
@@ -82,9 +97,12 @@ public class SimuladorUrgencia {
             Map<Integer, Integer> atendidosPorCategoria,
             Map<Integer, List<Long>> tiemposPorCategoria,
             List<Paciente> pacientesFueraDeTiempo,
-            Map<Integer, Integer> tiempoMaximoCategoria
+            Map<Integer, Integer> tiempoMaximoCategoria,
+            String idSeguimiento,
+            Map<String, Integer> minutoLlegadaSeguimiento
     ) {
         Paciente p = hospital.atenderSiguiente();
+
         if (p != null) {
             int minutoLlegada = (int) (p.getTiempoLlegada() / 60);
             long tiempoEspera = minutoActual - minutoLlegada;
@@ -99,6 +117,15 @@ public class SimuladorUrgencia {
             if (tiempoEspera > tiempoMaximoCategoria.get(p.getCategoria())) {
                 pacientesFueraDeTiempo.add(p);
             }
+            if (p.getId().equals(idSeguimiento)) {
+                int llegada = minutoLlegadaSeguimiento.getOrDefault(idSeguimiento, -1);
+                if (llegada != -1) {
+                    System.out.printf("\n[SEGUIMIENTO] Paciente %s fue atendido en el minuto %d (esperó %d min)\n",
+                            idSeguimiento, minutoActual, minutoActual - llegada);
+                }
+            }
+
+
         }
     }
 }
