@@ -1,12 +1,19 @@
 import java.util.*;
 
-public class Hospital {
+public class HospitalNuevo {
     Map<String, Paciente> pacientesTotales;
     PriorityQueue<Paciente> colaAtencion;
     Map<String, AreaAtencion> areasAtencion;
     List<Paciente> pacientesAtendidos;
+    Map<Integer, Integer> tiempoMaximoCategoria = Map.of(
+            1, 5,
+            2, 10,
+            3, 15,
+            4, 20,
+            5, 25
+    );
 
-    public Hospital(){
+    public HospitalNuevo(){
         pacientesTotales = new HashMap<String, Paciente>();
         areasAtencion = new HashMap<>();
         pacientesAtendidos = new ArrayList<>();
@@ -43,21 +50,48 @@ public class Hospital {
     }
 
 
-    public Paciente atenderSiguiente() {
-        Paciente p = colaAtencion.poll(); // paciente más urgente
+    public Paciente atenderSiguiente(int minutoActual) {
+        // Atención forzada si hay pacientes que superan su tiempo máximo
+        for (Paciente p : colaAtencion) {
+            int espera = minutoActual - (int) (p.getTiempoLlegada() / 60);
+            int maxPermitido = tiempoMaximoCategoria.get(p.getCategoria());
+
+            if (espera >= maxPermitido) {
+                colaAtencion.remove(p); // Lo sacamos de la cola
+                AreaAtencion area = areasAtencion.get(p.getArea());
+
+                if (area != null && !area.estaSaturada()) {
+                    area.ingresarPaciente(p);
+                    p.cambiarEstado("atendido");
+                    p.registrarCambio("Estado cambiado a atendido (forzado por tiempo máximo)");
+                    pacientesAtendidos.add(p);
+                    return p;
+                } else {
+                    colaAtencion.add(p); // reinsertamos si área está saturada
+                    break;
+                }
+            }
+        }
+
+        // Si nadie excedió el tiempo, seguimos con el más urgente
+        return atenderNormal();
+    }
+
+    private Paciente atenderNormal() {
+        Paciente p = colaAtencion.poll();
         if (p == null) return null;
 
         AreaAtencion area = areasAtencion.get(p.area);
         if (area != null && !area.estaSaturada()) {
             area.ingresarPaciente(p);
             p.cambiarEstado("atendido");
+            p.registrarCambio("Estado cambiado a atendido");
             pacientesAtendidos.add(p);
             return p;
         } else {
-            // Si área saturada, podrías reinsertarlo a la cola o manejarlo distinto
-            colaAtencion.add(p);
+            colaAtencion.add(p); // reinsertamos si no se pudo atender
+            return null;
         }
-        return null;
     }
 
     public List<Paciente> obtenerPacientesPorCategoria(int categoria) {
@@ -74,6 +108,7 @@ public class Hospital {
     public AreaAtencion obtenerArea(String nombre) {
         return areasAtencion.get(nombre);
     }
+
     private void asignarAreaDisponible(Paciente paciente) {
         for (AreaAtencion area : areasAtencion.values()) {
             if (!area.estaSaturada()) {

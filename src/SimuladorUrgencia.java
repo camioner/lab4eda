@@ -4,7 +4,7 @@ import java.util.*;
 public class SimuladorUrgencia {
 
     public void simular(int pacientesPorDia) {
-        Hospital hospital = new Hospital();
+        HospitalNuevo hospital = new HospitalNuevo();
         LectorPacientes lector = new LectorPacientes();
         String idSeguimiento = "ID0075"; // ID de paciente C4
         String idMalCategorizado = "ID0072";
@@ -114,26 +114,14 @@ public class SimuladorUrgencia {
 
     }
 
-    private void atenderYRegistrar(
-            Hospital hospital,
-            int minutoActual,
-            Map<String, Long> tiemposAtencion,
-            Map<Integer, Integer> atendidosPorCategoria,
-            Map<Integer, List<Long>> tiemposPorCategoria,
-            List<Paciente> pacientesFueraDeTiempo,
-            Map<Integer, Integer> tiempoMaximoCategoria,
-            String idSeguimiento,
-            Map<String, Integer> minutoLlegadaSeguimiento
-    ) {
-        Paciente p = hospital.atenderSiguiente();
-
+    private void atenderYRegistrar(HospitalNuevo hospital, int minutoActual, Map<String, Long> tiemposAtencion, Map<Integer, Integer> atendidosPorCategoria, Map<Integer, List<Long>> tiemposPorCategoria, List<Paciente> pacientesFueraDeTiempo, Map<Integer, Integer> tiempoMaximoCategoria, String idSeguimiento, Map<String, Integer> minutoLlegadaSeguimiento) {
+        Paciente p = hospital.atenderSiguiente(minutoActual);
         if (p != null) {
             int minutoLlegada = (int) (p.getTiempoLlegada() / 60);
             long tiempoEspera = minutoActual - minutoLlegada;
 
             tiemposAtencion.put(p.getId(), tiempoEspera);
-            atendidosPorCategoria.put(p.getCategoria(),
-                    atendidosPorCategoria.getOrDefault(p.getCategoria(), 0) + 1);
+            atendidosPorCategoria.put(p.getCategoria(), atendidosPorCategoria.getOrDefault(p.getCategoria(), 0) + 1);
 
             tiemposPorCategoria.putIfAbsent(p.getCategoria(), new ArrayList<>());
             tiemposPorCategoria.get(p.getCategoria()).add(tiempoEspera);
@@ -144,8 +132,7 @@ public class SimuladorUrgencia {
             if (p.getId().equals(idSeguimiento)) {
                 int llegada = minutoLlegadaSeguimiento.getOrDefault(idSeguimiento, -1);
                 if (llegada != -1) {
-                    System.out.printf("\n[SEGUIMIENTO] Paciente %s fue atendido en el minuto %d (esperó %d min)\n",
-                            idSeguimiento, minutoActual, minutoActual - llegada);
+                    System.out.printf("\n[SEGUIMIENTO] Paciente %s fue atendido en el minuto %d (esperó %d min)\n", idSeguimiento, minutoActual, minutoActual - llegada);
                 }
             }
 
